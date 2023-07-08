@@ -1,7 +1,9 @@
-import { Controller, Get, Patch, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Patch, UseGuards } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { getUser } from '../auth/decorator';
 import { JwtGuard } from '../auth/guard';
+import { EditUserDto } from './dto';
+import { UserService } from './user.service';
 
 @Controller('users')
 export class UserController {
@@ -9,6 +11,9 @@ export class UserController {
   //O parametro pode ser passado assim:@Req() req: Request e acessar req.user
   //porém podemos criar um custom decorator para facilitar
   //a leitura
+
+  constructor(private userService: UserService) {}
+
   @UseGuards(JwtGuard)
   @Get('me')
   getMe(@getUser() user: User, @getUser('email') email: string) {
@@ -16,6 +21,8 @@ export class UserController {
     return user;
   }
 
-  @Patch('me')
-  editUser() {}
+  @Patch()
+  editUser(@getUser('id') userId: number, @Body() dto: EditUserDto) {
+    return this.userService.editUser(userId, dto);
+  }
 }

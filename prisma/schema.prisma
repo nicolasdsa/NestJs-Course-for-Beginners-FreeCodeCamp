@@ -33,6 +33,7 @@ model Bookmark {
 
   userId Int
   user   User @relation(fields: [userId], references: [id])
+  //user   User @relation(fields: [userId], references: [id], onDelete: Cascade) assim deletaria os bookmarks relativos ao usuario deletado
 
   @@map("bookmarks")
 }
